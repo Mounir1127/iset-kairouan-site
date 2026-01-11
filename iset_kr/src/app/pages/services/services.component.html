@@ -1,0 +1,141 @@
+<main class="services-page">
+  <!-- Hero Section -->
+  <section class="hero-section" [style.backgroundImage]="'url(' + pageInfo.image + ')'">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">{{ pageInfo.title }}</h1>
+        <p class="hero-subtitle">{{ pageInfo.subtitle }}</p>
+        <p class="hero-description">{{ pageInfo.description }}</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-large" (click)="openStudentSpace()">
+            <i class="fas fa-external-link-alt"></i>
+            Accéder à l'espace étudiant
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-overlay"></div>
+  </section>
+
+  <!-- Services Content -->
+  <section class="services-content-section">
+    <div class="container">
+      <!-- Search & Filter -->
+      <div class="services-controls">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearch($event)"
+            placeholder="Rechercher un service...">
+        </div>
+
+        <div class="categories-filter">
+          <div class="categories-list">
+            <button *ngFor="let category of categories" [class.active]="selectedCategory === category.id"
+              (click)="filterByCategory(category.id)" class="category-btn">
+              {{ category.name }}
+              <span class="category-count">{{ category.count }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="services-grid">
+        <div class="searching-state" *ngIf="filteredServices.length === 0 && searchTerm">
+          <i class="fas fa-search"></i>
+          <span>Aucun service correspondant à "{{ searchTerm }}"</span>
+        </div>
+
+        <app-service-card *ngFor="let service of filteredServices; trackBy: trackByService" [service]="service"
+          [animated]="true">
+        </app-service-card>
+      </div>
+
+      <!-- Quick Access -->
+      <div class="quick-access-section">
+        <h3 class="section-title">Accès Rapide</h3>
+        <div class="quick-access-grid">
+          <a href="javascript:void(0)" class="quick-access-item" (click)="openStudentSpace()">
+            <div class="access-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="access-content">
+              <h4>Espace Étudiant</h4>
+              <p>Portail officiel d'accès aux services</p>
+            </div>
+            <i class="fas fa-arrow-right access-arrow"></i>
+          </a>
+
+          <a href="javascript:void(0)" class="quick-access-item" (click)="openStudentSpace()">
+            <div class="access-icon">
+              <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <div class="access-content">
+              <h4>Paiement en Ligne</h4>
+              <p>Règlement des frais académiques</p>
+            </div>
+            <i class="fas fa-arrow-right access-arrow"></i>
+          </a>
+
+          <a href="javascript:void(0)" class="quick-access-item" (click)="openStudentSpace()">
+            <div class="access-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="access-content">
+              <h4>Inscription Examens</h4>
+              <p>S'inscrire aux sessions d'examens</p>
+            </div>
+            <i class="fas fa-arrow-right access-arrow"></i>
+          </a>
+
+          <a href="javascript:void(0)" class="quick-access-item" (click)="openStudentSpace()">
+            <div class="access-icon">
+              <i class="fas fa-headset"></i>
+            </div>
+            <div class="access-content">
+              <h4>Support Technique</h4>
+              <p>Assistance et aide en ligne</p>
+            </div>
+            <i class="fas fa-arrow-right access-arrow"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Help Section -->
+      <div class="help-section">
+        <div class="help-card">
+          <div class="help-content">
+            <h3>Besoin d'aide ?</h3>
+            <p>Notre équipe de support est disponible pour vous aider avec les services en ligne.</p>
+            <div class="help-contacts">
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <div>
+                  <strong>Email :</strong>
+                  <span>support@isetk.rnu.tn</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <div>
+                  <strong>Téléphone :</strong>
+                  <span>(+216) 77 123 456</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <div>
+                  <strong>Horaires :</strong>
+                  <span>Lun-Ven : 8h-17h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="help-image">
+            <i class="fas fa-headset"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

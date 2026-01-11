@@ -1,0 +1,183 @@
+@use '../../../styles/variables' as *;
+
+.service-card {
+  background: $white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border-top: 4px solid $primary-blue;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 85, 164, 0.15);
+
+    .service-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .action-btn {
+      transform: translateX(5px);
+      background: linear-gradient(90deg, $primary-blue, $secondary-blue);
+      color: $white;
+
+      i {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+
+  &.compact {
+    padding: 1.5rem;
+
+    .service-icon {
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+    }
+
+    .service-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .service-description {
+      font-size: 0.95rem;
+    }
+  }
+
+  &.animated {
+    animation: fadeInUp 0.6s ease-out;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.service-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, $primary-blue, $secondary-blue);
+  color: $white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px rgba(0, 85, 164, 0.2);
+}
+
+.service-title {
+  color: $accent-blue;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.card-body {
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
+}
+
+.service-description {
+  color: $medium-gray;
+  line-height: 1.7;
+  margin: 0;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.card-footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.action-btn {
+  background: none;
+  border: 2px solid $primary-blue;
+  color: $primary-blue;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  &.with-action {
+    &:hover {
+      gap: 1rem;
+    }
+  }
+
+  i {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: all 0.3s;
+    transform: translateX(-5px);
+  }
+}
+
+.card-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, $secondary-blue, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  .service-card:hover & {
+    opacity: 1;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .service-card {
+    padding: 1.5rem;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+
+  .service-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+
+  .service-title {
+    font-size: 1.3rem;
+  }
+}

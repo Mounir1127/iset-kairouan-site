@@ -1,0 +1,34 @@
+<div class="stats-card" 
+     [class]="getSizeClass() + ' ' + getLayoutClass()"
+     [@countUp]="animated"
+     [style.--stat-color]="getColor()">
+  
+  <div class="stat-icon" [@pulse]="currentValue">
+    <i [class]="getIconClass()"></i>
+  </div>
+
+  <div class="stat-content">
+    <div class="stat-value">
+      <span class="value" [@pulse]="currentValue">
+        {{ getFormattedValue() }}
+      </span>
+      <span class="change" 
+            *ngIf="showChange && stat.change"
+            [style.color]="getChangeColor()">
+        <i class="fas" [class]="getChangeIcon()"></i>
+        {{ getChangeText() }}
+      </span>
+    </div>
+
+    <h4 class="stat-label">{{ stat.label }}</h4>
+    
+    <p class="stat-description" *ngIf="stat.description">
+      {{ stat.description }}
+    </p>
+  </div>
+
+  <div class="stat-decoration">
+    <div class="decoration-circle"></div>
+    <div class="decoration-wave"></div>
+  </div>
+</div>

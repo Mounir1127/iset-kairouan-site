@@ -1,0 +1,79 @@
+<div class="certificate-card" 
+     [class.hovered]="isHovered" 
+     [class.animated]="animated"
+     [class.detailed]="variant === 'detailed'"
+     [class.expired]="isExpired()"
+     (mouseenter)="isHovered = true"
+     (mouseleave)="isHovered = false"
+     [attr.data-certificate-id]="certificate.id">
+  
+  <div class="card-badge" [style.background]="getStandardColor()">
+    <span class="badge-text">{{ certificate.badge }}</span>
+  </div>
+
+  <div class="card-header">
+    <div class="certificate-type">
+      <i class="fas fa-certificate"></i>
+      <span>Certificat Numérique</span>
+    </div>
+    <h3 class="certificate-title">{{ certificate.title }}</h3>
+    <div class="certificate-standard" [style.background]="getStandardColor()">
+      {{ certificate.standard }}
+    </div>
+  </div>
+
+  <div class="card-body">
+    <p class="certificate-description">{{ certificate.description }}</p>
+    
+    <div class="certificate-details" *ngIf="showDetails || variant === 'detailed'">
+      <div class="detail-item" *ngIf="certificate.issuer">
+        <i class="fas fa-building"></i>
+        <span>Émetteur: {{ certificate.issuer }}</span>
+      </div>
+      <div class="detail-item" *ngIf="certificate.category">
+        <i class="fas fa-tag"></i>
+        <span>Catégorie: {{ certificate.category }}</span>
+      </div>
+      <div class="detail-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Délivré le: {{ certificate.issuedDate }}</span>
+      </div>
+      <div class="detail-item" *ngIf="certificate.validUntil">
+        <i class="fas fa-calendar-times"></i>
+        <span>Valide jusqu'au: {{ certificate.validUntil }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="status-info">
+      <div class="status-badge" [class]="getStatusClass()">
+        <i class="fas" 
+           [class.fa-check-circle]="!isExpired() && getDaysRemaining() > 30"
+           [class.fa-exclamation-triangle]="!isExpired() && getDaysRemaining() <= 30"
+           [class.fa-times-circle]="isExpired()"></i>
+        <span>{{ getStatusText() }}</span>
+      </div>
+      <div class="issued-date">
+        <i class="fas fa-calendar-alt"></i>
+        {{ certificate.issuedDate }}
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="details-btn" (click)="toggleDetails()" *ngIf="variant !== 'detailed'">
+        <i class="fas" [class.fa-chevron-down]="!showDetails" [class.fa-chevron-up]="showDetails"></i>
+        {{ showDetails ? 'Moins' : 'Plus' }} de détails
+      </button>
+      
+      <button class="verify-btn" (click)="verifyCertificate()" *ngIf="showVerification">
+        <i class="fas fa-external-link-alt"></i>
+        Vérifier
+      </button>
+    </div>
+  </div>
+
+  <div class="card-decoration">
+    <div class="decoration-line" [style.background]="getStandardColor()"></div>
+  </div>
+</div>

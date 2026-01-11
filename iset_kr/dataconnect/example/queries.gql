@@ -1,0 +1,33 @@
+mutation CreateUser @auth(level: USER) {
+  user_insert(data: {
+    username: "newuser",
+    email: "newuser@example.com",
+    createdAt_expr: "request.time"
+  })
+}
+
+query ListProjects @auth(level: USER) {
+  projects {
+    id
+    title
+    description
+  }
+}
+
+mutation AddLike($projectId: UUID!) @auth(level: USER) {
+  like_insert(data: {
+    userId_expr: "auth.uid",
+    projectId: $projectId,
+    createdAt_expr: "request.time"
+  })
+}
+
+query GetPattern @auth(level: PUBLIC, insecureReason: "This operation is safe to expose to the public") {
+  patterns {
+    id
+    name
+    designer
+    url
+    difficulty
+  }
+}

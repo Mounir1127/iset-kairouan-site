@@ -1,0 +1,326 @@
+@use '../../../../styles/variables' as *;
+
+// --- Admin Pro Variables ---
+$admin-navy: #0f172a;
+$admin-bg: #f8fafc;
+$admin-gold: #f59e0b;
+$admin-blue: #0055a4;
+$sidebar-width: 280px;
+$sidebar-collapsed: 90px;
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: $admin-bg;
+}
+
+// --- Enhanced Sidebar ---
+.admin-sidebar {
+    width: $sidebar-width;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+
+    &.collapsed {
+        width: $sidebar-collapsed;
+
+        .logo-text,
+        .menu-label,
+        span,
+        .role-badge {
+            display: none;
+        }
+
+        .nav-item {
+            justify-content: center;
+            padding: 1.2rem;
+
+            i {
+                margin: 0;
+            }
+        }
+
+        .sidebar-header {
+            padding: 2rem 0;
+            text-align: center;
+            justify-content: center;
+        }
+    }
+}
+
+.sidebar-header {
+    padding: 3rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: $admin-gold;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        color: #0f172a;
+        font-size: 1.2rem;
+        box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .logo-text {
+        font-size: 1.4rem;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: white;
+    }
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 0 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    .menu-label {
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin: 1.5rem 0 0.5rem 1rem;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 1.1rem 1.5rem;
+        color: #94a3b8;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        gap: 1.2rem;
+        border-radius: 14px;
+        font-weight: 600;
+
+        i {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        &:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+
+            i {
+                transform: scale(1.1);
+            }
+        }
+
+        &.active {
+            color: white;
+            background: linear-gradient(135deg, $admin-blue 0%, #004488 100%);
+            box-shadow: 0 10px 20px rgba(0, 85, 164, 0.25);
+
+            i {
+                color: $admin-gold;
+            }
+        }
+
+        &.return-site {
+            margin-top: 1rem;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+    }
+}
+
+.sidebar-footer {
+    padding: 2rem 1.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+    .logout-btn {
+        width: 100%;
+        background: rgba(239, 68, 68, 0.05);
+        border: 1px solid rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        padding: 1rem;
+        border-radius: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        justify-content: center;
+        font-weight: 700;
+        transition: all 0.3s;
+
+        &:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+    }
+}
+
+// --- Admin Main Content ---
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+// --- Premium Header ---
+.admin-header {
+    height: 90px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    border-bottom: 1px solid #f1f5f9;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .toggle-btn {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        color: $admin-navy;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+
+        &:hover {
+            background: white;
+            border-color: $admin-gold;
+            color: $admin-gold;
+            transform: rotate(90deg);
+        }
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: $admin-navy;
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.quick-add-btn {
+    background: linear-gradient(135deg, $admin-blue 0%, #004488 100%);
+    color: white;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 10px 20px rgba(0, 85, 164, 0.2);
+
+    &:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 85, 164, 0.3);
+    }
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid #f1f5f9;
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .username {
+        font-weight: 800;
+        color: $admin-navy;
+        font-size: 1rem;
+    }
+
+    .role-badge {
+        background: rgba(245, 158, 11, 0.1);
+        color: $admin-gold;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .admin-avatar {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, $admin-gold 0%, #d97706 100%);
+        color: #0f172a;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.3rem;
+        box-shadow: 0 5px 15px rgba(245, 158, 11, 0.25);
+    }
+}
+
+// --- Transitions Content ---
+.admin-content {
+    padding: 3rem;
+    background-color: #f8fafc;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        position: fixed;
+        left: -100%;
+
+        &.open {
+            left: 0;
+        }
+    }
+
+    .admin-header {
+        padding: 0 1.5rem;
+    }
+
+    .page-title {
+        display: none;
+    }
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "_id": "695444a650a11bacc62157ea",
+    "role": "staff",
+    "name": "Dr. Ahmed Enseignant",
+    "__v": 0
+  },
+  {
+    "_id": "69553139b3b27da345514f27",
+    "name": "Mounir Admin",
+    "email": "admin@iset.tn",
+    "matricule": "ADMIN001",
+    "password": "password_admin_2024",
+    "role": "admin",
+    "status": "active",
+    "__v": 0
+  },
+  {
+    "_id": "695533340124a476882d1df1",
+    "matricule": "90475",
+    "__v": 0,
+    "email": "mounir.90475@isetk.rnu.tn",
+    "name": "Mounir User",
+    "password": "m123123",
+    "role": "staff",
+    "status": "active"
+  }
+]

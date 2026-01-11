@@ -1,0 +1,33 @@
+<div class="service-card" 
+     [class.hovered]="isHovered" 
+     [class.animated]="animated"
+     [class.compact]="variant === 'compact'"
+     (mouseenter)="isHovered = true"
+     (mouseleave)="isHovered = false"
+     (click)="onCardClick()"
+     [attr.data-service-id]="service.id">
+  
+  <div class="card-header">
+    <div class="service-icon">
+      <i [class]="getIconClass()"></i>
+    </div>
+    <h3 class="service-title">{{ service.title }}</h3>
+  </div>
+
+  <div class="card-body">
+    <p class="service-description">{{ service.description }}</p>
+  </div>
+
+  <div class="card-footer" *ngIf="showAction">
+    <button class="action-btn" 
+            [class.with-action]="service.action || service.link"
+            [attr.aria-label]="getActionText() + ' pour ' + service.title">
+      <span>{{ getActionText() }}</span>
+      <i [class]="getActionIcon()"></i>
+    </button>
+  </div>
+
+  <div class="card-decoration">
+    <div class="decoration-line"></div>
+  </div>
+</div>

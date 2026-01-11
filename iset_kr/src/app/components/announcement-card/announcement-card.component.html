@@ -1,0 +1,66 @@
+<div class="announcement-card" [class.expanded]="isExpanded">
+
+
+
+  <!-- Image Section -->
+  <div class="announcement-image">
+    <img [src]="announcement.image || 'assets/images/default-announcement.jpg'" [alt]="announcement.title">
+  </div>
+
+  <!-- Date Bar (Full Width Blue) -->
+  <div class="announcement-date-bar">
+    <i class="far fa-calendar-alt me-2"></i>
+    <span>{{ (announcement.date | date:'dd. MMM. yyyy') || 'Date à venir' }}</span>
+  </div>
+
+  <!-- Content Section -->
+  <div class="announcement-body">
+    <h3 class="announcement-title">{{ announcement.title }}</h3>
+
+    <button class="details-link" (click)="toggleExpand()">
+      {{ isExpanded ? 'RÉDUIRE' : 'PLUS DE DÉTAILS' }}
+      <i class="fas" [class.fa-chevron-up]="isExpanded" [class.fa-arrow-right]="!isExpanded" class="ms-1"></i>
+    </button>
+  </div>
+
+  <!-- Détails étendus -->
+  <div class="announcement-extra-details" [class.show]="isExpanded">
+    <p>{{ announcement.content }}</p>
+
+    <div class="target-audience" *ngIf="announcement.targetAudience && announcement.targetAudience.length > 0"
+      style="margin-top: 1rem; padding: 0.8rem; background: white; border-radius: 8px;">
+      <div style="font-weight: 600; color: #0055a4; margin-bottom: 0.5rem; font-size: 0.85rem;">
+        <i class="fas fa-users"></i> Destiné à:
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <span *ngFor="let audience of announcement.targetAudience"
+          style="background: rgba(0,85,164,0.1); color: #0055a4; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+          {{ audience }}
+        </span>
+      </div>
+    </div>
+
+    <div class="announcement-attachments" *ngIf="hasAttachments()" style="margin-top: 1rem;">
+      <button
+        style="background: rgba(0,85,164,0.1); color: #0055a4; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem;"
+        (click)="toggleAttachments()">
+        <i class="fas fa-paperclip"></i>
+        {{ getAttachmentCount() }} pièce{{ getAttachmentCount() > 1 ? 's' : '' }} jointe{{ getAttachmentCount() > 1 ?
+        's' : '' }}
+      </button>
+
+      <div *ngIf="showAttachments" style="margin-top: 0.8rem; background: white; border-radius: 8px; padding: 0.8rem;">
+        <div *ngFor="let attachment of announcement.attachments"
+          style="display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem; background: #f8fafc; border-radius: 6px; margin-bottom: 0.5rem;">
+          <i class="fas fa-file" style="color: #0055a4;"></i>
+          <span style="flex: 1; font-size: 0.85rem; color: #334155;">{{ attachment.name }}</span>
+          <button (click)="downloadAttachment(attachment)"
+            style="background: none; border: none; color: #f59e0b; cursor: pointer; padding: 0.3rem;">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

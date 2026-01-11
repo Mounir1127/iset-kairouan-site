@@ -1,0 +1,444 @@
+<main class="home-page overflow-hidden">
+  <!-- 1. Hero Section (Bootstrap Carousel + Custom Pro Overlay) -->
+  <section id="hero" class="vh-100 position-relative bg-dark">
+    <div id="heroCarousel" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+      <div class="carousel-inner h-100">
+        <div *ngFor="let slide of heroSlides; let i = index" class="carousel-item h-100"
+          [class.active]="i === currentHeroSlide">
+          <div class="hero-bg-img position-absolute w-100 h-100" [style.backgroundImage]="'url(' + slide.image + ')'"
+            style="background-size: cover; background-position: center;">
+          </div>
+          <div class="hero-overlay position-absolute w-100 h-100"></div>
+
+          <div class="container h-100 d-flex align-items-center position-relative z-3">
+            <div class="col-lg-8 animate-fade-up">
+              <h1 class="display-1 fw-black text-white mb-4 ls-tight" [innerHTML]="slide.title"></h1>
+              <p class="h4 text-white-50 mb-5 fw-light max-w-600">{{ slide.subtitle }}</p>
+              <div class="d-flex flex-wrap gap-3 mt-4">
+                <a routerLink="/formations" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-gold">
+                  <i class="fas fa-graduation-cap me-2"></i> EXPLORER NOS FORMATIONS
+                </a>
+                <button (click)="openStudentSpace()"
+                  class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold blur-bg">
+                  <i class="fas fa-user-graduate me-2"></i> ESPACE ÉTUDIANT
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicators -->
+      <div class="carousel-indicators mb-5 justify-content-start ms-4 ms-lg-5 ps-lg-4">
+        <button *ngFor="let slide of heroSlides; let i = index" type="button" (click)="goToSlide(i)"
+          [class.active]="i === currentHeroSlide" class="rounded-pill mx-1" style="width: 30px; height: 4px;"></button>
+      </div>
+
+      <!-- Arrow Controls -->
+      <button class="carousel-control-prev h-25 my-auto ms-4" (click)="prevSlide()">
+        <span class="carousel-icon-box shadow-sm"><i class="fas fa-chevron-left"></i></span>
+      </button>
+      <button class="carousel-control-next h-25 my-auto me-4" (click)="nextSlide()">
+        <span class="carousel-icon-box shadow-sm"><i class="fas fa-chevron-right"></i></span>
+      </button>
+    </div>
+
+    <!-- Scroll Down -->
+    <div class="scroll-indicator-box position-absolute bottom-0 start-50 translate-middle-x mb-4">
+      <div class="mouse-scroll shadow-sm">
+        <div class="wheel"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Stats Section (Floating Cards) -->
+  <section class="stats-section position-relative py-5">
+    <div class="container mt-neg-100 position-relative z-3">
+      <!-- Main Stats -->
+      <div class="row g-4 justify-content-center">
+        <div class="col-6 col-md-3" *ngFor="let stat of stats; let i = index">
+          <div
+            class="card h-100 border-0 shadow-xl rounded-4 text-center p-4 hover-up glass-card animate-on-scroll scale-up"
+            [class]="'delay-' + (i + 1)">
+            <div class="stat-icon-circle mx-auto mb-3 mb-lg-4 shadow-blue">
+              <i [class]="stat.icon"></i>
+            </div>
+            <h3 class="display-5 fw-black text-navy mb-0">{{ stat.value }}<span class="text-gold h4">+</span></h3>
+            <p class="small fw-bold text-secondary text-uppercase ls-1 mb-0">{{ stat.label }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. News & Announcements (Pro Style) -->
+  <section class="news-section py-10 bg-white position-relative">
+    <div class="container position-relative z-2">
+      <!-- Section Header Pro -->
+      <div class="row align-items-end mb-5">
+        <div class="col-lg-7">
+          <div class="d-inline-flex align-items-center gap-3 mb-2">
+            <span class="d-inline-block bg-gold" style="width: 40px; height: 4px; border-radius: 2px;"></span>
+            <span class="text-gold fw-bold ls-2 text-uppercase small">Information en Continu</span>
+          </div>
+          <h2 class="display-4 fw-black text-navy mb-0 ls-tight">Actualités & <br> <span class="text-gold-gradient">Vie
+              de l'Institut</span></h2>
+        </div>
+        <div class="col-lg-5 text-lg-end mt-4 mt-lg-0">
+          <div class="nav-filter-pro d-inline-flex gap-4">
+            <button class="filter-btn" [class.active]="activeTab === 'all'" (click)="setActiveTab('all')">
+              Tout
+            </button>
+            <button class="filter-btn" [class.active]="activeTab === 'news'" (click)="setActiveTab('news')">
+              Actualités
+            </button>
+            <button class="filter-btn" [class.active]="activeTab === 'event'" (click)="setActiveTab('event')">
+              Agenda
+            </button>
+            <button class="filter-btn" [class.active]="activeTab === 'tender'" (click)="setActiveTab('tender')">
+              Appels d'Offre
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- Limiter à 6 éléments sur la home page -->
+        <div class="col-md-6 col-lg-4 d-flex" *ngFor="let item of filteredItems.slice(0, 6)">
+          <app-announcement-card [announcement]="item" class="w-100 animate-on-scroll slide-up"></app-announcement-card>
+        </div>
+      </div>
+
+      <div *ngIf="filteredItems.length === 0" class="text-center py-5">
+        <div class="empty-state-icon mb-4"><i class="fas fa-newspaper-slash display-1 text-muted opacity-25"></i></div>
+        <p class="h5 text-muted fw-light">Aucune publication dans cette catégorie.</p>
+      </div>
+
+      <div class="text-center mt-5" *ngIf="filteredItems.length > 6">
+        <a routerLink="/actualites" class="btn btn-link text-navy fw-bold text-decoration-none ls-1">VOIR TOUTES les
+          actualités <i class="fas fa-arrow-right ms-2 text-gold"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="dept-section py-10">
+    <div class="section-bg-text">ISET</div>
+    <div class="container position-relative">
+      <div class="dept-header-pro d-flex align-items-center animate-on-scroll slide-up">
+        <div class="header-accent me-4 d-none d-md-block"></div>
+        <div class="flex-grow-1">
+          <h2 class="display-5 fw-black text-navy mb-2 ls-tight">Pôles d'Excellence</h2>
+          <p class="h5 text-secondary fw-light mb-0">Explorez nos domaines d'expertise à la pointe de la technologie.
+          </p>
+        </div>
+        <!-- Bouton catalogue supprimé -->
+      </div>
+
+      <div class="row g-5">
+        <!-- GE -->
+        <div class="col-md-6 col-lg-3 animate-on-scroll slide-up delay-1">
+          <a routerLink="/departement/genie-electrique" class="card dept-card-pro text-decoration-none"
+            style="--dept-color: #0055a4; --dept-color-alpha: rgba(0, 85, 164, 0.1);">
+            <div class="dept-icon-box">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <h4>Génie Électrique</h4>
+            <p>Automatisme & Électronique</p>
+            <div class="btn-view-dept">
+              DÉCOUVRIR <i class="fas fa-chevron-right"></i>
+            </div>
+          </a>
+        </div>
+        <!-- IT -->
+        <div class="col-md-6 col-lg-3 animate-on-scroll slide-up delay-2">
+          <a routerLink="/departement/informatique" class="card dept-card-pro text-decoration-none"
+            style="--dept-color: #00b8d4; --dept-color-alpha: rgba(0, 184, 212, 0.1);">
+            <div class="dept-icon-box">
+              <i class="fas fa-laptop-code"></i>
+            </div>
+            <h4>Informatique</h4>
+            <p>Développement & Réseaux</p>
+            <div class="btn-view-dept">
+              DÉCOUVRIR <i class="fas fa-chevron-right"></i>
+            </div>
+          </a>
+        </div>
+        <!-- GM -->
+        <div class="col-md-6 col-lg-3 animate-on-scroll slide-up delay-3">
+          <a routerLink="/departement/genie-mecanique" class="card dept-card-pro text-decoration-none"
+            style="--dept-color: #f4511e; --dept-color-alpha: rgba(244, 81, 30, 0.1);">
+            <div class="dept-icon-box">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <h4>Génie Mécanique</h4>
+            <p>Conception & Maintenance</p>
+            <div class="btn-view-dept">
+              DÉCOUVRIR <i class="fas fa-chevron-right"></i>
+            </div>
+          </a>
+        </div>
+        <!-- GESTION -->
+        <div class="col-md-6 col-lg-3 animate-on-scroll slide-up delay-4">
+          <a routerLink="/departement/gestion" class="card dept-card-pro text-decoration-none"
+            style="--dept-color: #43a047; --dept-color-alpha: rgba(67, 160, 71, 0.1);">
+            <div class="dept-icon-box">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h4>Section Gestion</h4>
+            <p>Management & Entreprise</p>
+            <div class="btn-view-dept">
+              DÉCOUVRIR <i class="fas fa-chevron-right"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Student Life (Clubs Section) -->
+  <section class="life-section py-8 bg-navy text-white position-relative overflow-hidden">
+    <div class="abstract-blobs opacity-10"></div>
+    <div class="container position-relative z-2">
+      <div class="row align-items-center mb-5 animate-on-scroll slide-up">
+        <div class="col-lg-8">
+          <h2 class="display-5 fw-black ls-tight mb-3">Une Vie Associative <span class="text-gold">Vibrante</span></h2>
+          <p class="h5 fw-light text-white-50">Des dizaines de clubs innovants pour transformer vos idées en projets
+            réels.</p>
+        </div>
+        <div class="col-lg-4 text-end d-none d-lg-block">
+          <div class="carousel-nav-pro d-flex justify-content-end gap-3">
+            <button class="btn-nav-round" (click)="scrollClubs('left')" aria-label="Précédent">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="btn-nav-round" (click)="scrollClubs('right')" aria-label="Suivant">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="clubs-carousel-pro position-relative animate-on-scroll slide-up delay-1">
+        <div class="d-flex gap-4 p-2 clubs-inner scrollbar-hide" #clubsScrollContainer>
+          <a *ngFor="let club of clubs" [href]="club.link" target="_blank"
+            class="card club-card flex-shrink-0 border-0 rounded-4 p-5 text-center text-decoration-none transition"
+            style="width: 320px;">
+            <div
+              class="club-avatar mx-auto mb-4 shadow-sm bg-white text-navy display-5 rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 90px; height: 90px;">
+              <i [class]="club.icon"></i>
+            </div>
+            <h4 class="fw-bold text-white mb-3 ls-1 lh-sm">{{ club.name }}</h4>
+            <p class="small text-white-50 mb-4 opacity-75">{{ club.description }}</p>
+            <span class="badge rounded-pill bg-gold text-navy py-3 px-4 w-100 fw-black">REJOINDRE LE CLUB <i
+                class="fas fa-arrow-right ms-2 scale-75"></i></span>
+          </a>
+        </div>
+
+        <!-- Mobile arrows -->
+        <div class="d-lg-none d-flex justify-content-center gap-4 mt-5">
+          <button class="btn-nav-round sm" (click)="scrollClubs('left')"><i class="fas fa-chevron-left"></i></button>
+          <button class="btn-nav-round sm" (click)="scrollClubs('right')"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Professional Training (Glassmorphism Cards) -->
+  <section class="training-section py-10 bg-light">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-6 animate-on-scroll slide-right">
+          <a routerLink="/formations"
+            class="card h-100 border-0 rounded-5 overflow-hidden shadow-2xl group portal-card">
+            <div class="portal-img h-100" style="background-image: url('assets/images/images_iset/1629_1.JPG');"></div>
+            <div class="portal-overlay"></div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end p-5">
+              <span class="text-gold fw-black ls-3 mb-2">CYCLE LICENCE</span>
+              <h2 class="display-4 fw-black text-white mb-4">Ingénierie du <br> <span class="text-gold">Futur</span>
+              </h2>
+              <div class="btn btn-white text-navy fw-bold rounded-pill px-4 btn-hover-gold">
+                DÉCOUVRIR LE CURSUS <i class="fas fa-arrow-right ms-2"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-6 animate-on-scroll slide-left">
+          <a routerLink="/formations"
+            class="card h-100 border-0 rounded-5 overflow-hidden shadow-2xl group portal-card">
+            <div class="portal-img h-100" style="background-image: url('assets/images/images_iset/BD34_1.JPG');"></div>
+            <div class="portal-overlay"></div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end p-5">
+              <span class="text-gold fw-black ls-3 mb-2">CYCLE MASTÈRE</span>
+              <h2 class="display-4 fw-black text-white mb-4">Spécialisation <br> <span class="text-gold">Premium</span>
+              </h2>
+              <div class="btn btn-white text-navy fw-bold rounded-pill px-4 btn-hover-gold">
+                DÉCOUVRIR LE CURSUS <i class="fas fa-arrow-right ms-2"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Facebook CTA -->
+  <section class="social-section py-5">
+    <div class="container">
+      <a href="https://www.facebook.com/KairouanISET?locale=fr_FR" target="_blank"
+        class="fb-pro-card bg-facebook rounded-5 p-5 position-relative d-block text-decoration-none overflow-hidden shadow-2xl shadow-blue-500 animate-on-scroll">
+        <div class="row align-items-center position-relative z-2">
+          <div class="col-lg-8 text-center text-lg-start mb-4 mb-lg-0">
+            <div class="d-inline-flex align-items-center gap-3 mb-3">
+              <div
+                class="fb-icon-white bg-white text-facebook rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 50px; height: 50px;">
+                <i class="fab fa-facebook-f fa-lg"></i>
+              </div>
+              <span class="text-white-50 fw-bold ls-2 uppercase">FACEBOOK OFFICIEL</span>
+            </div>
+            <h2 class="display-4 fw-black text-white ls-tight">Vivez l'ISET Kairouan <br> <span class="text-white-50">en
+                temps réel</span></h2>
+          </div>
+          <div class="col-lg-4 text-center text-lg-end">
+            <div class="btn btn-white btn-lg px-5 py-3 rounded-pill fw-black text-facebook shadow-lg-hover">
+              PAGE OFFICIELLE <i class="fas fa-external-link-alt ms-2"></i>
+            </div>
+          </div>
+        </div>
+        <div class="fb-bg-icon position-absolute opacity-10"><i class="fab fa-facebook-f"></i></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 8. Partners Section -->
+  <section class="partners-section py-10">
+    <div class="container">
+      <div class="section-header text-center mb-8 animate-on-scroll slide-up">
+        <span class="text-gold fw-black ls-3 uppercase">Collaboration & Écosystème</span>
+        <h2 class="display-4 fw-black text-navy mt-2">Nos Partenaires</h2>
+        <div class="divider-gold mx-auto"></div>
+      </div>
+
+      <!-- 1. International Partners -->
+      <div class="partner-category-wrapper animate-on-scroll slide-up">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="partner-category-title">Partenaires Internationaux</h3>
+          <div class="partner-nav d-flex gap-2">
+            <button class="partner-nav-round" (click)="scrollPartners('international', 'left')"><i
+                class="fas fa-chevron-left"></i></button>
+            <button class="partner-nav-round" (click)="scrollPartners('international', 'right')"><i
+                class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="partners-carousel-wrapper">
+          <div class="partners-inner" #internationalScrollContainer>
+            <a *ngFor="let partner of internationalPartners" [href]="'#'" class="partner-card-pro">
+              <img [src]="partner.logo" [alt]="partner.name" [title]="partner.name">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Academic Partners -->
+      <div class="partner-category-wrapper animate-on-scroll slide-up delay-1">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="partner-category-title">Partenaires Académiques</h3>
+          <div class="partner-nav d-flex gap-2">
+            <button class="partner-nav-round" (click)="scrollPartners('academic', 'left')"><i
+                class="fas fa-chevron-left"></i></button>
+            <button class="partner-nav-round" (click)="scrollPartners('academic', 'right')"><i
+                class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="partners-carousel-wrapper">
+          <div class="partners-inner" #academicScrollContainer>
+            <a *ngFor="let partner of academicPartners" [href]="partner.link || '#'" class="partner-card-pro">
+              <img [src]="partner.logo" [alt]="partner.name" [title]="partner.name">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Industrial/Socio-Professional Partners -->
+      <div class="partner-category-wrapper animate-on-scroll slide-up delay-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="partner-category-title">Partenaires Sociaux Professionnels</h3>
+          <div class="partner-nav d-flex gap-2">
+            <button class="partner-nav-round" (click)="scrollPartners('industrial', 'left')"><i
+                class="fas fa-chevron-left"></i></button>
+            <button class="partner-nav-round" (click)="scrollPartners('industrial', 'right')"><i
+                class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="partners-carousel-wrapper">
+          <div class="partners-inner" #industrialScrollContainer>
+            <a *ngFor="let partner of industrialPartners" [href]="partner.link || '#'" target="_blank"
+              class="partner-card-pro">
+              <img [src]="partner.logo" [alt]="partner.name" [title]="partner.name">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Campus Experience -->
+  <section class="gallery-section py-10 bg-white">
+    <div class="container">
+      <div class="section-header mb-5">
+        <h2 class="display-4 fw-black text-navy mb-0">Immersion Campus</h2>
+        <div class="divider-gold mx-auto"></div>
+      </div>
+
+      <div class="gallery-carousel position-relative">
+        <div class="d-flex gap-4 p-2 gallery-inner overflow-hidden" #galleryScrollContainer>
+          <div *ngFor="let img of campusImages"
+            class="gallery-card flex-shrink-0 shadow-lg rounded-4 overflow-hidden position-relative group shadow-hover-xl cursor-pointer"
+            (click)="openImagePreview(img)">
+            <img [src]="img" class="img-fluid transition scale-110 group-hover-scale-100"
+              style="height: 350px; width: 450px; object-fit: cover;">
+            <div
+              class="gallery-overlay-pro group-hover-opacity-100 bg-navy-70 d-flex align-items-center justify-content-center">
+              <i class="fas fa-expand-arrows-alt text-white display-4"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gallery Nav -->
+        <button
+          class="btn btn-navy shadow-lg rounded-circle position-absolute top-50 start-0 translate-middle-y ms-neg-20 d-none d-lg-flex"
+          (click)="scrollGallery('left')">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button
+          class="btn btn-navy shadow-lg rounded-circle position-absolute top-50 end-0 translate-middle-y me-neg-20 d-none d-lg-flex"
+          (click)="scrollGallery('right')">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Final CTA -->
+  <section class="final-cta-section border-top border-white-10">
+    <div class="cta-bg-premium position-absolute w-100 h-100 top-0"></div>
+    <div class="container cta-content text-center text-white">
+      <div class="animate-on-scroll">
+        <h2 class="display-2 fw-black mb-4 ls-tight">Prêt pour l'<span>excellence</span> ?</h2>
+        <p class="h4 fw-light text-white-50 mb-5 max-w-800 mx-auto ls-1">Faites le premier pas vers une carrière
+          technologique innovante et transformez votre avenir avec l'ISET Kairouan.</p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-4 mt-5">
+          <a routerLink="/formations"
+            class="btn btn-gold btn-xl px-5 py-4 rounded-pill fw-black shadow-gold-xl transition-up d-flex align-items-center">
+            REJOINDRE L'ISET <i class="fas fa-paper-plane ms-3"></i>
+          </a>
+          <button (click)="openStudentSpace()"
+            class="btn btn-outline-white btn-xl px-5 py-4 rounded-pill fw-black transition-up d-flex align-items-center">
+            CONTACTER UN CONSEILLER <i class="fas fa-headset ms-3"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

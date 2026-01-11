@@ -1,0 +1,440 @@
+<div class="login-page">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <!-- Back Home Button -->
+  <a routerLink="/" class="btn-back-home shadow-lg">
+    <i class="fas fa-home"></i>
+  </a>
+  <div class="login-container">
+    <!-- Left Side - Branding & Features -->
+    <div class="login-left">
+      <div class="brand-section">
+        <div class="brand-logo">
+          <div class="logo-circle">IK</div>
+          <div class="brand-text">
+            <h1>ISET KAIR OUAN</h1>
+            <p>Institut Supérieur des Études Technologiques</p>
+          </div>
+        </div>
+
+        <div class="login-info">
+          <p>
+            <i class="fas fa-info-circle"></i>
+            Pour accéder à l'espace étudiant officiel,
+            <button (click)="openOfficialPortal()" class="portal-link">
+              cliquez ici
+            </button>
+          </p>
+        </div>
+      </div>
+
+      <div class="features-section">
+        <h3>Pourquoi utiliser notre plateforme ?</h3>
+        <div class="features-list">
+          <div *ngFor="let feature of loginFeatures" class="feature-item">
+            <div class="feature-icon">
+              <i class="fas" [class]="feature.icon"></i>
+            </div>
+            <div class="feature-content">
+              <h4>{{ feature.title }}</h4>
+              <p>{{ feature.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="certifications-section">
+        <div class="certifications">
+          <div class="certification-badge">
+            <i class="fas fa-certificate"></i>
+            ISO 9001:2015
+          </div>
+          <div class="certification-badge">
+            <i class="fas fa-certificate"></i>
+            ISO 21001:2018
+          </div>
+        </div>
+      </div>
+
+      <!-- Decorative Prestige Text -->
+      <div class="decor-text">ISETK</div>
+    </div>
+
+    <!-- Right Side - Forms -->
+    <div class="login-right">
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab" [class.active]="activeTab === 'login'" (click)="switchTab('login')">
+          <i class="fas fa-sign-in-alt"></i>
+          Connexion
+        </button>
+        <button class="auth-tab" [class.active]="activeTab === 'register'" (click)="switchTab('register')">
+          <i class="fas fa-user-plus"></i>
+          Inscription
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form *ngIf="activeTab === 'login'" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form"
+        [class.shake-error]="errorMessage">
+
+        <!-- Error Alert - Account Status/Login Errors -->
+        <div class="form-alert error" *ngIf="errorMessage" (click)="errorMessage = ''">
+          <div class="alert-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="alert-content">
+            {{ errorMessage }}
+          </div>
+          <button type="button" class="alert-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="loginUsername">
+            <i class="fas fa-user"></i>
+            Email ou Matricule
+          </label>
+          <input type="text" id="loginUsername" formControlName="username"
+            placeholder="exemple@isetk.rnu.tn ou 20240001"
+            [class.error]="loginFormControls['username'].invalid && (loginFormControls['username'].touched || loginSubmitted)">
+          <div class="error-text"
+            *ngIf="loginFormControls['username'].invalid && (loginFormControls['username'].touched || loginSubmitted)">
+            Ce champ est requis
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">
+            <i class="fas fa-lock"></i>
+            Mot de passe
+          </label>
+          <div class="password-input">
+            <input [type]="showPassword ? 'text' : 'password'" id="loginPassword" formControlName="password"
+              placeholder="Votre mot de passe"
+              [class.error]="loginFormControls['password'].invalid && (loginFormControls['password'].touched || loginSubmitted)">
+            <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+              <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+            </button>
+          </div>
+          <div class="error-text"
+            *ngIf="loginFormControls['password'].invalid && (loginFormControls['password'].touched || loginSubmitted)">
+            Mot de passe requis (minimum 6 caractères)
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" formControlName="rememberMe">
+            <span>Se souvenir de moi</span>
+          </label>
+          <button type="button" class="forgot-password" (click)="forgotPassword()">
+            Mot de passe oublié ?
+          </button>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="isLoading">
+          <i class="fas fa-sign-in-alt" *ngIf="!isLoading"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+          {{ isLoading ? 'Connexion en cours...' : 'Se connecter' }}
+        </button>
+
+
+      </form>
+
+      <!-- Register Form -->
+      <form *ngIf="activeTab === 'register'" [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form">
+
+        <!-- Physical Identity -->
+        <div class="form-group">
+          <label for="registerFullName">
+            <i class="fas fa-user"></i>
+            Nom complet
+          </label>
+          <input type="text" id="registerFullName" formControlName="fullName" placeholder="Votre nom et prénom"
+            [class.error]="registerFormControls['fullName'].invalid && (registerFormControls['fullName'].touched || registerSubmitted)">
+          <div class="error-text"
+            *ngIf="registerFormControls['fullName'].invalid && (registerFormControls['fullName'].touched || registerSubmitted)">
+            Nom complet requis (minimum 3 caractères)
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="registerMatricule">
+              <i class="fas fa-id-card"></i>
+              Matricule (RH/Étudiant)
+            </label>
+            <input type="text" id="registerMatricule" formControlName="matricule" placeholder="Ex: 20240001"
+              [class.error]="registerFormControls['matricule'].invalid && (registerFormControls['matricule'].touched || registerSubmitted)">
+          </div>
+
+          <div class="form-group">
+            <label for="registerPhone">
+              <i class="fas fa-phone"></i>
+              Téléphone
+            </label>
+            <input type="tel" id="registerPhone" formControlName="phone" placeholder="+216 XX XXX XXX"
+              [class.error]="registerFormControls['phone'].invalid && (registerFormControls['phone'].touched || registerSubmitted)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="registerRole">
+            <i class="fas fa-user-tag"></i>
+            Rôle
+          </label>
+          <select id="registerRole" formControlName="role" class="form-select"
+            [class.error]="registerFormControls['role'].invalid && registerFormControls['role'].touched">
+            <option value="student">Étudiant</option>
+            <option value="staff">Enseignant / Personnel</option>
+            <option value="admin">Administrateur</option>
+          </select>
+          <div class="error-text" *ngIf="registerFormControls['role'].invalid && registerFormControls['role'].touched">
+            Veuillez choisir un rôle
+          </div>
+        </div>
+
+        <!-- Role Specific Fields -->
+        <div class="role-fields-container"
+          *ngIf="registerForm.get('role')?.value === 'student' || registerForm.get('role')?.value === 'staff'">
+
+          <div class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Informations Complémentaires
+          </div>
+
+          <!-- Common for Student & Staff: Identity & Dept -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="registerCin">
+                <i class="fas fa-address-card"></i>
+                Numéro CIN
+              </label>
+              <input type="text" id="registerCin" formControlName="cin" placeholder="12345678"
+                [class.error]="registerFormControls['cin'].invalid && registerFormControls['cin'].touched">
+            </div>
+            <div class="form-group">
+              <label for="registerGender">
+                <i class="fas fa-venus-mars"></i>
+                Genre
+              </label>
+              <select id="registerGender" formControlName="gender" class="form-select">
+                <option value="">Sélectionner</option>
+                <option *ngFor="let g of genders" [value]="g">{{g}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="registerBirth">
+                <i class="fas fa-calendar-alt"></i>
+                Date de naissance
+              </label>
+              <input type="date" id="registerBirth" formControlName="birthDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="regDept">
+                <i class="fas fa-building"></i>
+                Département
+              </label>
+              <select id="regDept" formControlName="department" class="form-select" (change)="onDepartmentChange()">
+                <option value="">Choisir...</option>
+                <option *ngFor="let dept of departments$ | async" [value]="dept._id">{{dept.name}}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Student Specific -->
+          <ng-container *ngIf="registerForm.get('role')?.value === 'student'">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="regClass">
+                  <i class="fas fa-users"></i>
+                  Classe
+                </label>
+                <select id="regClass" formControlName="classGroup" class="form-select">
+                  <option value="">Choisir...</option>
+                  <option *ngFor="let cls of filteredClasses" [value]="cls._id">{{cls.name}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="regLevel">
+                  <i class="fas fa-layer-group"></i>
+                  Niveau
+                </label>
+                <select id="regLevel" formControlName="level" class="form-select">
+                  <option value="">Choisir...</option>
+                  <option *ngFor="let lvl of levels" [value]="lvl">{{lvl}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-object-group"></i>
+                Groupe
+              </label>
+              <div class="radio-group">
+                <label class="radio-item" *ngFor="let g of groups">
+                  <input type="radio" [value]="g" formControlName="group">
+                  <span>Groupe {{g}}</span>
+                </label>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Staff Specific -->
+          <ng-container *ngIf="registerForm.get('role')?.value === 'staff'">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="regGrade">
+                  <i class="fas fa-award"></i>
+                  Grade
+                </label>
+                <select id="regGrade" formControlName="grade" class="form-select">
+                  <option value="">Choisir...</option>
+                  <option *ngFor="let g of grades" [value]="g">{{g}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="regSpec">
+                  <i class="fas fa-brain"></i>
+                  Spécialité
+                </label>
+                <input type="text" id="regSpec" formControlName="speciality" placeholder="Informatique, Gestion...">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="regOffice">
+                <i class="fas fa-door-open"></i>
+                Bureau
+              </label>
+              <input type="text" id="regOffice" formControlName="office" placeholder="Ex: Bloc B 102">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-chalkboard-teacher"></i>
+                  Classes assignées
+                </label>
+                <select multiple formControlName="assignedClasses" class="form-select multiselect">
+                  <option *ngFor="let cls of classes$ | async" [value]="cls._id">{{cls.name}}</option>
+                </select>
+                <small class="help-text">Ctrl + Clic pour plusieurs</small>
+              </div>
+              <div class="form-group">
+                <label>
+                  <i class="fas fa-book"></i>
+                  Matières / Modules
+                </label>
+                <select multiple formControlName="subjects" class="form-select multiselect">
+                  <option *ngFor="let mod of modules$ | async" [value]="mod._id">{{mod.name}}</option>
+                </select>
+                <small class="help-text">Ctrl + Clic pour plusieurs</small>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+
+        <!-- Account Security -->
+        <div class="form-group">
+          <label for="registerEmail">
+            <i class="fas fa-envelope"></i>
+            Email académique
+          </label>
+          <input type="email" id="registerEmail" formControlName="email" placeholder="exemple@isetk.rnu.tn"
+            [class.error]="registerFormControls['email'].invalid && (registerFormControls['email'].touched || registerSubmitted)">
+          <div class="error-text"
+            *ngIf="registerFormControls['email'].invalid && (registerFormControls['email'].touched || registerSubmitted)">
+            Email académique @isetk.rnu.tn requis
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="registerPassword">
+              <i class="fas fa-lock"></i>
+              Mot de passe
+            </label>
+            <div class="password-input">
+              <input [type]="showPassword ? 'text' : 'password'" id="registerPassword" formControlName="password"
+                placeholder="Minimum 8 caractères"
+                [class.error]="registerFormControls['password'].invalid && (registerFormControls['password'].touched || registerSubmitted)">
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+            <div class="error-text"
+              *ngIf="registerFormControls['password'].invalid && (registerFormControls['password'].touched || registerSubmitted)">
+              Mot de passe requis (min 8 car.)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="registerConfirmPassword">
+              <i class="fas fa-lock"></i>
+              Confirmer
+            </label>
+            <div class="password-input">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" id="registerConfirmPassword"
+                formControlName="confirmPassword" placeholder="Confirmez"
+                [class.error]="registerFormControls['confirmPassword'].invalid && (registerFormControls['confirmPassword'].touched || registerSubmitted)">
+              <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
+                <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="error-text match-error"
+          *ngIf="registerForm.hasError('passwordMismatch') && (registerFormControls['confirmPassword'].touched || registerSubmitted)">
+          Les mots de passe ne correspondent pas
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" id="acceptTerms" formControlName="acceptTerms">
+          <label for="acceptTerms">
+            J'accepte les
+            <a routerLink="/mentions-legales">conditions d'utilisation</a>
+            et la
+            <a routerLink="/politique-confidentialite">politique de confidentialité</a>
+          </label>
+        </div>
+        <div class="error-text"
+          *ngIf="registerFormControls['acceptTerms'].invalid && (registerFormControls['acceptTerms'].touched || registerSubmitted)">
+          Vous devez accepter les conditions
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="registerForm.invalid || isLoading">
+          <i class="fas fa-user-plus" *ngIf="!isLoading"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+          {{ isLoading ? 'Inscription en cours...' : 'Créer un compte' }}
+        </button>
+
+
+      </form>
+      <!-- Footer -->
+      <div class="auth-footer">
+        <p *ngIf="activeTab === 'login'">
+          Pas encore de compte ?
+          <button type="button" (click)="switchTab('register')">S'inscrire</button>
+        </p>
+        <p *ngIf="activeTab === 'register'">
+          Déjà un compte ?
+          <button type="button" (click)="switchTab('login')">Se connecter</button>
+        </p>
+        <p class="portal-redirect">
+          <i class="fas fa-external-link-alt"></i>
+          Pour accéder au portail officiel,
+          <button (click)="openOfficialPortal()">cliquez ici</button>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

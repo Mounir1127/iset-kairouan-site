@@ -1,0 +1,259 @@
+<div class="news-management-container">
+    <!-- Status Dashboard -->
+    <div class="stats-overview">
+        <div class="stat-card total">
+            <div class="stat-icon"><i class="fas fa-list"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ stats.total }}</span>
+                <span class="stat-label">Total Annonces</span>
+            </div>
+        </div>
+        <div class="stat-card event">
+            <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ stats.events }}</span>
+                <span class="stat-label">Manifestations</span>
+            </div>
+        </div>
+        <div class="stat-card tender">
+            <div class="stat-icon"><i class="fas fa-file-contract"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ stats.tenders }}</span>
+                <span class="stat-label">Appels d'offre</span>
+            </div>
+        </div>
+        <div class="stat-card news">
+            <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ stats.news }}</span>
+                <span class="stat-label">Actualités</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-body shadow-sm">
+        <div class="toolbar">
+            <div class="filter-group">
+                <button [class.active]="currentFilter === 'all'" (click)="setFilter('all')">Tout</button>
+                <button [class.active]="currentFilter === 'event'" (click)="setFilter('event')">Événements</button>
+                <button [class.active]="currentFilter === 'tender'" (click)="setFilter('tender')">Offres</button>
+                <button [class.active]="currentFilter === 'news'" (click)="setFilter('news')">Actus</button>
+            </div>
+
+            <div class="actions">
+                <button class="btn-refresh" title="Actualiser" (click)="loadAnnouncements()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn btn-add-modern" (click)="openAddModal()">
+                    <i class="fas fa-plus"></i> Ajouter une annonce
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Visuel</th>
+                        <th>Titre & Aperçu</th>
+                        <th>Type</th>
+                        <th>Statut</th>
+                        <th>Publication</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of filteredAnnouncements">
+                        <td class="img-cell">
+                            <div class="table-img" [class.no-img]="!item.image">
+                                <img *ngIf="item.image" [src]="item.image" [alt]="item.title">
+                                <i *ngIf="!item.image" class="fas fa-image"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="title-cell">
+                                <span class="main-title text-truncate">{{ item.title }}</span>
+                                <span class="sub-text text-truncate">{{ item.description || item.summary || 'Pas de
+                                    description' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-type" [ngClass]="item.type">
+                                <i class="fas"
+                                    [ngClass]="{'fa-calendar': item.type === 'event', 'fa-file-invoice': item.type === 'tender', 'fa-newspaper': item.type === 'news'}"></i>
+                                {{ item.type }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-indicator" [ngClass]="item.status">
+                                {{ getStatusLabel(item.status) }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="date-cell">
+                                <span>{{ item.publishDate | date:'dd MMM yyyy' }}</span>
+                                <small *ngIf="item.type === 'event'">Début: {{ item.startDate | date:'dd/MM' }}</small>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="action-buttons">
+                                <button (click)="openEditModal(item)" class="btn-edit" title="Modifier"><i
+                                        class="fas fa-pen"></i></button>
+                                <button (click)="deleteItem(item._id)" class="btn-delete" title="Supprimer"><i
+                                        class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="filteredAnnouncements.length === 0">
+                        <td colspan="6" class="empty-row">
+                            <i class="fas fa-box-open"></i>
+                            <p>Aucune annonce trouvée pour ce filtre.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop" *ngIf="showModal" [class.active]="showModal">
+        <div class="modal-card bounceIn">
+            <div class="modal-header">
+                <div class="header-info">
+                    <i class="fas fa-edit circle-icon"></i>
+                    <div>
+                        <h4>{{ isEditing ? 'Modifier l\'élément' : 'Ajouter une annonce' }}</h4>
+                        <p>Remplissez les informations ci-dessous</p>
+                    </div>
+                </div>
+                <button class="close-x" (click)="closeModal()">&times;</button>
+            </div>
+
+            <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+                <div class="modal-body custom-scrollbar">
+
+                    <div class="form-section">
+                        <h5 class="section-divider"><span>Configuration Générale</span></h5>
+                        <div class="form-grid">
+                            <div class="form-field full">
+                                <label>Titre de l'annonce</label>
+                                <input type="text" formControlName="title"
+                                    placeholder="Ex: Hackathon 2024, Inscriptions Masters...">
+                            </div>
+                            <div class="form-field">
+                                <label>Type de contenu</label>
+                                <select formControlName="type">
+                                    <option value="event">Manifestation</option>
+                                    <option value="tender">Appel d'Offre</option>
+                                    <option value="news">Actualité / Nouveauté</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Statut</label>
+                                <select formControlName="status">
+                                    <option value="draft">Brouillon</option>
+                                    <option value="published">Publié</option>
+                                    <option value="archived">Archivé</option>
+                                    <option value="cancelled" *ngIf="selectedType === 'tender'">Annulé</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h5 class="section-divider"><span>Visuel & Médias</span></h5>
+                        <div class="image-uploader">
+                            <div class="input-area">
+                                <label>URL de l'image ou de l'affiche</label>
+                                <input type="text" formControlName="image" placeholder="https://...">
+                            </div>
+                            <div class="preview-area" *ngIf="announcementForm.get('image')?.value">
+                                <img [src]="announcementForm.get('image')?.value" alt="Aperçu">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC CONTENT SECTIONS -->
+                    <div class="form-section animate-up" *ngIf="selectedType === 'event'">
+                        <h5 class="section-divider"><span>Infos Manifestation</span></h5>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Type de manifestation</label>
+                                <select formControlName="eventType">
+                                    <option value="conférence">Conférence</option>
+                                    <option value="séminaire">Séminaire</option>
+                                    <option value="workshop">Workshop</option>
+                                    <option value="journée scientifique">Journée Scientifique</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label>Organisateur</label>
+                                <input type="text" formControlName="organizer">
+                            </div>
+                            <div class="form-field">
+                                <label>Date Début</label>
+                                <input type="date" formControlName="startDate">
+                            </div>
+                            <div class="form-field">
+                                <label>Heure</label>
+                                <input type="text" formControlName="time" placeholder="09:00">
+                            </div>
+                            <div class="form-field full">
+                                <label>Lieu</label>
+                                <input type="text" formControlName="location">
+                            </div>
+                            <div class="form-field full">
+                                <label>Description (Aperçu)</label>
+                                <textarea formControlName="description" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section animate-up" *ngIf="selectedType === 'tender'">
+                        <h5 class="section-divider"><span>Infos Appels d'Offre</span></h5>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Référence</label>
+                                <input type="text" formControlName="reference">
+                            </div>
+                            <div class="form-field">
+                                <label>Organisme</label>
+                                <input type="text" formControlName="issuer">
+                            </div>
+                            <div class="form-field">
+                                <label>Date Limite</label>
+                                <input type="date" formControlName="deadline">
+                            </div>
+                            <div class="form-field full">
+                                <label>Conditions</label>
+                                <textarea formControlName="conditions" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section animate-up" *ngIf="selectedType === 'news'">
+                        <h5 class="section-divider"><span>Contenu de l'Actualité</span></h5>
+                        <div class="form-grid">
+                            <div class="form-field full">
+                                <label>Résumé court</label>
+                                <textarea formControlName="summary" rows="2"></textarea>
+                            </div>
+                            <div class="form-field full">
+                                <label>Contenu détaillé</label>
+                                <textarea formControlName="content" rows="6"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" (click)="closeModal()">Annuler</button>
+                    <button type="submit" class="btn-primary-gradient" [disabled]="announcementForm.invalid">
+                        <i class="fas fa-check"></i> {{ isEditing ? 'Mettre à jour' : 'Ajouter maintenant' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

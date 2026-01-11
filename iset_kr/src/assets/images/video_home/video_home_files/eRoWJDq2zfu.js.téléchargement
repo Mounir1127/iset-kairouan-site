@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("CometStoryAttachmentsFalcoEvent",["FalcoLoggerInternal","getFalcoLogPolicy_DO_NOT_USE"],(function(t,n,r,o,a,i,l){"use strict";var e=r("getFalcoLogPolicy_DO_NOT_USE")("1743395"),s=o("FalcoLoggerInternal").create("comet_story_attachments",e),u=s;l.default=u}),98);

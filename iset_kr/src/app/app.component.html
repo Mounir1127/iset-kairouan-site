@@ -1,0 +1,165 @@
+<!-- Modern Header -->
+<header class="main-header transparent-header"
+  *ngIf="!isAdminRoute && !isLoginPage && !isContactPage && !isFormationsPage">
+  <div class="header-container">
+    <!-- Logo & Title -->
+    <div class="logo-section" routerLink="/">
+      <div class="logo-img">
+        <img src="assets/logo-iset.png" alt="Logo ISET Kairouan">
+      </div>
+      <div class="institution-name">
+        <div class="main-name">INSTITUT SUPÉRIEUR DES</div>
+        <div class="sub-name">ETUDES TECHNOLOGIQUES DE Kairouan</div>
+      </div>
+    </div>
+
+    <!-- Navigation Icons & Actions -->
+    <div class="header-actions">
+      <button class="action-icon search-btn"><i class="fas fa-search"></i></button>
+
+      <a routerLink="/contact" class="nav-link">Contactez-nous</a>
+      <a routerLink="/formations" class="nav-link">Formations</a>
+
+      <button class="extranet-btn" (click)="openStudentSpace()">
+        <i class="fas fa-users-viewfinder"></i>
+        <span>Espace Extranet</span>
+      </button>
+
+      <a routerLink="/login" class="login-btn-compact btn-login-premium" title="Connexion">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Connexion</span>
+      </a>
+
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="menu-text">MENU</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Full-Screen Menu Overlay -->
+<div class="menu-overlay-full" [class.open]="isMenuOpen">
+  <div class="menu-bg-campus"></div>
+  <div class="menu-sidebar-blue">
+    <div class="menu-logo-section">
+      <div class="logo-img">
+        <img src="assets/logo-iset.png" alt="Logo ISET Kairouan">
+      </div>
+      <div class="institution-name">
+        <div class="main-name">INSTITUT SUPÉRIEUR DES</div>
+        <div class="sub-name">ETUDES TECHNOLOGIQUES DE Kairouan</div>
+      </div>
+    </div>
+
+    <nav class="overlay-nav">
+      <a routerLink="/" (click)="closeMenu()" routerLinkActive="active">
+        <span class="nav-icon"><i class="fas fa-home"></i></span>
+        <span class="nav-text">ACCUEIL</span>
+      </a>
+      <a routerLink="/institut" (click)="closeMenu()" routerLinkActive="active">
+        <span class="nav-icon"><i class="fas fa-university"></i></span>
+        <span class="nav-text">L'INSTITUT</span>
+      </a>
+      <a routerLink="/formations" (click)="closeMenu()" routerLinkActive="active">
+        <span class="nav-icon"><i class="fas fa-graduation-cap"></i></span>
+        <span class="nav-text">FORMATIONS</span>
+      </a>
+
+      <a routerLink="/projets" (click)="closeMenu()" routerLinkActive="active">
+        <span class="nav-icon"><i class="fas fa-project-diagram"></i></span>
+        <span class="nav-text">PROJETS</span>
+      </a>
+      <a routerLink="/vie-universitaire" (click)="closeMenu()" routerLinkActive="active">
+        <span class="nav-icon"><i class="fas fa-users"></i></span>
+        <span class="nav-text">VIE ÉTUDIANTE</span>
+      </a>
+      <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active">
+        <span class="nav-icon"><i class="fas fa-envelope"></i></span>
+        <span class="nav-text">CONTACT</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a routerLink="/login" (click)="closeMenu()" class="login-link">
+        <span class="nav-icon"><i class="fas fa-sign-in-alt"></i></span>
+        <span class="nav-text">CONNEXION</span>
+      </a>
+
+      <a *ngIf="currentUser?.role === 'admin'" routerLink="/admin" (click)="closeMenu()" class="admin-link">
+        <span class="nav-icon"><i class="fas fa-shield-alt"></i></span>
+        <span class="nav-text">ADMIN DASHBOARD</span>
+      </a>
+    </nav>
+
+    <div class="menu-footer-pro">
+      <div class="contact-info">
+        <div class="info-item">
+          <i class="fas fa-phone-alt"></i>
+          <span>+216 77 270 514</span>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-envelope"></i>
+          <span>contact@isetkr.rnu.tn</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="close-menu-btn" (click)="closeMenu()">
+    <i class="fas fa-times"></i>
+    <span>FERMER</span>
+  </button>
+
+  <div class="diagonal-stripes"></div>
+</div>
+
+<!-- Router Outlet -->
+<router-outlet></router-outlet>
+
+<!-- Footer -->
+<footer class="main-footer" *ngIf="!isAdminRoute && !isLoginPage && !isContactPage && !isFormationsPage">
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>ISET Kairouan</h4>
+      <p>Institut Supérieur des Études Technologiques de Kairouan, un établissement public d'enseignement supérieur
+        qui
+        forme des techniciens supérieurs et des ingénieurs dans les domaines technologiques.</p>
+    </div>
+
+    <div class="footer-column">
+      <h4>LIENS RAPIDES</h4>
+      <ul>
+        <li><a routerLink="/formations">Formations & Diplômes</a></li>
+        <li><a routerLink="/services">Inscription & Admission</a></li>
+        <li><a href="#">Bibliothèque Numérique</a></li>
+        <li><button (click)="openStudentSpace()"
+            style="background: none; border: none; cursor: pointer; font: inherit; color: rgba(255, 255, 255, 0.85); text-decoration: none; transition: color 0.3s; padding: 0;">Espace
+            Étudiant</button></li>
+        <li><a routerLink="/certifications">Certifications ISO</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>CONTACT</h4>
+      <ul class="contact-info">
+        <li><i class="fas fa-map-marker-alt"></i> <span>Avenue de l'Environnement, 3100 Kairouan, Tunisie</span></li>
+        <li><i class="fas fa-phone"></i> <span>(+216) 77 123 456</span></li>
+        <li><i class="fas fa-envelope"></i> <span>contact@isetk.rnu.tn</span></li>
+        <li><i class="fas fa-clock"></i> <span>Lundi - Vendredi: 8h00 - 17h00</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 ISET Kairouan. Tous droits réservés. | <a href="#" style="color:#a3d5ff;">Mentions légales</a> |
+      <a href="#" style="color:#a3d5ff;">Politique de confidentialité</a> | <a href="#" style="color:#a3d5ff;">Plan du
+        site</a>
+    </p>
+    <p style="margin-top: 0.5rem; font-size: 0.85rem;">Certifié ISO 9001:2015 et ISO 21001:2018</p>
+  </div>
+</footer>

@@ -1,0 +1,102 @@
+<div class="department-page" *ngIf="department; else notFound">
+    <!-- Hero Section -->
+    <section class="hero-section"
+        [style.backgroundImage]="'linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url(' + department.heroImage + ')'">
+        <div class="container hero-content animate-fade-up">
+            <div class="dept-badge">
+                <i class="fas" [class]="department.icon"></i>
+                <span>Département</span>
+            </div>
+            <h1 class="dept-title">{{ department.name }}</h1>
+            <p class="dept-lead">{{ department.description }}</p>
+
+            <div class="hero-stats">
+                <div class="stat-item" *ngFor="let stat of department.stats">
+                    <span class="stat-val">{{ stat.value }}</span>
+                    <span class="stat-lbl">{{ stat.label }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specialties Grid -->
+    <section class="specialties-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nos Spécialités</h2>
+                <div class="line"></div>
+            </div>
+
+            <div class="specialties-grid">
+                <div class="specialty-card" *ngFor="let spec of department.specialties">
+                    <div class="spec-icon">
+                        <i class="fas" [class]="spec.icon"></i>
+                    </div>
+                    <div class="spec-content">
+                        <h3>{{ spec.name }}</h3>
+                        <p>{{ spec.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Head of Dept & Labs Mixed Section -->
+    <section class="info-mixed-section">
+        <div class="container mixed-grid">
+            <!-- Head of Dept -->
+            <div class="hod-card">
+                <div class="hod-header">
+                    <h3>Mot du Chef de Département</h3>
+                </div>
+                <div class="hod-body">
+                    <div class="hod-avatar">
+                        <i class="fas fa-user-tie" style="font-size: 3rem; color: #cbd5e1;"></i>
+                        <!-- <img [src]="department.headOfDepartment.image" alt="Chef de département"> -->
+                    </div>
+                    <div class="hod-text">
+                        <h4>{{ department.headOfDepartment.name }}</h4>
+                        <span class="role">{{ department.headOfDepartment.role }}</span>
+                        <p class="quote">
+                            <i class="fas fa-quote-left"></i>
+                            {{ department.headOfDepartment.message }}
+                            <i class="fas fa-quote-right"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Labs List -->
+            <div class="labs-card">
+                <h3><i class="fas fa-flask"></i> Laboratoires & Clubs</h3>
+                <ul class="labs-list">
+                    <li *ngFor="let lab of department.labs">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ lab }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="dept-cta">
+        <div class="container">
+            <h2>Prêt à intégrer le département {{ department.name }} ?</h2>
+            <div class="cta-actions">
+                <!-- routerLink needs to be valid, using relative or absolute path -->
+                <a routerLink="/formations" class="btn btn-primary">Voir le plan d'études</a>
+                <a routerLink="/contact" class="btn btn-outline">Nous contacter</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<ng-template #notFound>
+    <div class="not-found-container">
+        <i class="fas fa-search"></i>
+        <h2>Département non trouvé</h2>
+        <p>Le département demandé n'existe pas ou la page est en cours de construction.</p>
+        <a routerLink="/" class="btn btn-primary">Retour à l'accueil</a>
+    </div>
+</ng-template>

@@ -1,0 +1,54 @@
+type User @table {
+  username: String!
+  email: String!
+  createdAt: Timestamp!
+  displayName: String
+  bio: String
+  profilePictureUrl: String
+}
+
+type Project @table {
+  user: User!
+  title: String!
+  description: String!
+  createdAt: Timestamp!
+  finishedDate: Date
+  photos: [String]
+}
+
+type Pattern @table {
+  name: String!
+  url: String!
+  createdAt: Timestamp!
+  designer: String
+  difficulty: String
+}
+
+type Yarn @table {
+  name: String!
+  brand: String!
+  createdAt: Timestamp!
+  fiberContent: String
+  weightCategory: String
+  colorway: String
+}
+
+type Comment @table {
+  user: User!
+  project: Project!
+  text: String!
+  createdAt: Timestamp!
+}
+
+type Like @table(key: ["user", "project"]) {
+  user: User!
+  project: Project!
+  createdAt: Timestamp!
+}
+
+type Favorite @table {
+  user: User!
+  project: Project
+  pattern: Pattern
+  createdAt: Timestamp!
+}
