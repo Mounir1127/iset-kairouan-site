@@ -1,0 +1,9 @@
+[build]
+command = "npm install && npm run build"
+publish = "dist/iset_kr/browser"
+
+[build.environment]
+NODE_VERSION = "18"
+
+[[plugins]]
+package = "@netlify/angular-runtime"
